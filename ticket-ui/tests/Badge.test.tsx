@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Badge, StatusBadge, ChannelBadge } from '@/components/ui/Badge';
+import { Badge, StatusBadge, ChannelBadge, PriorityBadge } from '@/components/ui/Badge';
 
 // ─────────────────────────────────────────────
 //  Generic Badge Component
@@ -122,5 +122,31 @@ describe('ChannelBadge Component', () => {
     const { container } = render(<ChannelBadge channel="messaging" />);
     const el = container.firstChild as HTMLElement;
     expect(el.className).toContain('teal');
+  });
+});
+
+// ─────────────────────────────────────────────
+//  PriorityBadge Component
+// ─────────────────────────────────────────────
+
+describe('PriorityBadge Component', () => {
+  it('renders "Urgent" label for urgent priority', () => {
+    render(<PriorityBadge priority="urgent" />);
+    expect(screen.getByText('Urgent')).toBeInTheDocument();
+  });
+
+  it('renders "High" label for high priority', () => {
+    render(<PriorityBadge priority="high" />);
+    expect(screen.getByText('High')).toBeInTheDocument();
+  });
+
+  it('renders "Medium" label for medium priority', () => {
+    render(<PriorityBadge priority="medium" />);
+    expect(screen.getByText('Medium')).toBeInTheDocument();
+  });
+
+  it('renders "Low" label for low priority', () => {
+    render(<PriorityBadge priority="low" />);
+    expect(screen.getByText('Low')).toBeInTheDocument();
   });
 });
