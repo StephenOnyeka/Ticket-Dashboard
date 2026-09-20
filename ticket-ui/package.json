@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.103.1",
+    "framer-motion": "^13.4.0",
+    "iconsax": "^0.1.1",
+    "iconsax-react": "^0.0.8",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
