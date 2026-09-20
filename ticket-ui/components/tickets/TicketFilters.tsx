@@ -114,24 +114,6 @@ export function TicketFilters({ onFiltersChange, initialStatus = '', initialChan
         </select>
       </div>
 
-      {/* Channel Filter */}
-      <div className="w-full sm:w-44">
-        <label htmlFor="filter-channel" className="sr-only">Filter by channel</label>
-        <select
-          id="filter-channel"
-          value={channel}
-          onChange={handleChannelChange}
-          aria-label="Filter by channel"
-          className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer"
-        >
-          {CHANNEL_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Clear Filters */}
       {hasFilters && (
         <button

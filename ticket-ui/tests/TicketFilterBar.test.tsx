@@ -15,7 +15,7 @@ describe('TicketFilters Component', () => {
     render(<TicketFilters onFiltersChange={() => {}} />);
     expect(screen.getByPlaceholderText(/search by title, email, or keyword/i)).toBeInTheDocument();
     expect(screen.getByLabelText('Filter by status')).toBeInTheDocument();
-    expect(screen.getByLabelText('Filter by channel')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Filter by channel')).not.toBeInTheDocument();
   });
 
   it('triggers onFiltersChange when search query is typed (after debounce)', () => {

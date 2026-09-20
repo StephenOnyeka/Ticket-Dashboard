@@ -6,10 +6,6 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import {
   Ticket,
-  Category,
-  TickCircle,
-  Clock,
-  CloseCircle,
   Global,
   Sms,
   Messages3,
@@ -43,65 +39,39 @@ export function Sidebar() {
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
-        <div>
-          <div className="px-3 mb-2 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Main</div>
-          <div className="space-y-1">
-            <Link
-              href="/dashboard"
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
-                pathname === '/dashboard'
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'hover:bg-slate-800/60 hover:text-white text-slate-300'
-              }`}
-            >
-              <Category size={18} variant="Linear" color="currentColor" />
-              <span>Overview</span>
-            </Link>
-            <Link
-              href="/dashboard?status=open"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
-            >
-              <Clock size={18} variant="Linear" color="currentColor" className="text-emerald-400" />
-              <span>Open Tickets</span>
-            </Link>
-            <Link
-              href="/dashboard?status=pending"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
-            >
-              <TickCircle size={18} variant="Linear" color="currentColor" className="text-amber-400" />
-              <span>Pending</span>
-            </Link>
-            <Link
-              href="/dashboard?status=closed"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
-            >
-              <CloseCircle size={18} variant="Linear" color="currentColor" className="text-slate-400" />
-              <span>Closed</span>
-            </Link>
-          </div>
-        </div>
-
+      <nav className="flex-1 px-4 py-6 overflow-y-auto">
         <div>
           <div className="px-3 mb-2 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Channels</div>
           <div className="space-y-1">
             <Link
               href="/dashboard?channel=web"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                pathname === '/dashboard?channel=web'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'hover:bg-slate-800/60 hover:text-white text-slate-300'
+              }`}
             >
               <Global size={18} variant="Linear" color="currentColor" className="text-blue-400" />
               <span>Web</span>
             </Link>
             <Link
               href="/dashboard?channel=email"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                pathname === '/dashboard?channel=email'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'hover:bg-slate-800/60 hover:text-white text-slate-300'
+              }`}
             >
               <Sms size={18} variant="Linear" color="currentColor" className="text-purple-400" />
               <span>Email</span>
             </Link>
             <Link
               href="/dashboard?channel=messaging"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                pathname === '/dashboard?channel=messaging'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'hover:bg-slate-800/60 hover:text-white text-slate-300'
+              }`}
             >
               <Messages3 size={18} variant="Linear" color="currentColor" className="text-teal-400" />
               <span>Messaging</span>
