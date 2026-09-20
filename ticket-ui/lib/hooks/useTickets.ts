@@ -14,7 +14,7 @@ import {
   updateTicket,
   addComment,
 } from '../api';
-import type { TicketFilters, CreateTicketPayload, UpdateTicketPayload, AddCommentPayload } from '../types';
+import type { TicketFilters, CreateTicketPayload, UpdateTicketPayload, AddCommentPayload, Ticket } from '../types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -37,7 +37,7 @@ export function useTickets(filters: TicketFilters = {}) {
   return useQuery({
     queryKey: ticketKeys.list(filters),
     queryFn: () => getTickets(filters),
-    staleTime: 10_000, // 10 seconds
+    staleTime: 10_000,
   });
 }
 
@@ -60,24 +60,89 @@ export function useCreateTicket() {
   });
 }
 
+/**
+ * Optimistic update hook for updating ticket status, assigned agent, or tags.
+ */
 export function useUpdateTicket() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateTicketPayload }) =>
       updateTicket(id, payload),
-    onSuccess: (data) => {
+
+    onMutate: async ({ id, payload }) => {
+      // Cancel outgoing fetches so they don't overwrite optimistic update
+      await queryClient.cancelQueries({ queryKey: ticketKeys.detail(id) });
+      await queryClient.cancelQueries({ queryKey: ticketKeys.lists() });
+
+      // Snapshot previous value
+      const previousTicket = queryClient.getQueryData<Ticket>(ticketKeys.detail(id));
+
+      // Optimistically update detail cache
+      if (previousTicket) {
+        queryClient.setQueryData<Ticket>(ticketKeys.detail(id), {
+          ...previousTicket,
+          ...payload,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      return { previousTicket };
+    },
+
+    onError: (_err, { id }, context) => {
+      if (context?.previousTicket) {
+        queryClient.setQueryData(ticketKeys.detail(id), context.previousTicket);
+      }
+    },
+
+    onSettled: (_data, _error, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ticketKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: ticketKeys.lists() });
-      queryClient.setQueryData(ticketKeys.detail(data.id), data);
     },
   });
 }
 
+/**
+ * Optimistic update hook for adding comments to a ticket.
+ */
 export function useAddComment() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: AddCommentPayload }) =>
       addComment(id, payload),
-    onSuccess: (_, { id }) => {
+
+    onMutate: async ({ id, payload }) => {
+      await queryClient.cancelQueries({ queryKey: ticketKeys.detail(id) });
+      const previousTicket = queryClient.getQueryData<Ticket>(ticketKeys.detail(id));
+
+      if (previousTicket) {
+        const optimisticComment = {
+          id: `temp-${Date.now()}`,
+          ticketId: id,
+          authorId: 'me',
+          authorName: 'Agent',
+          authorRole: 'agent' as const,
+          body: payload.body,
+          createdAt: new Date().toISOString(),
+        };
+
+        queryClient.setQueryData<Ticket>(ticketKeys.detail(id), {
+          ...previousTicket,
+          comments: [...previousTicket.comments, optimisticComment],
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      return { previousTicket };
+    },
+
+    onError: (_err, { id }, context) => {
+      if (context?.previousTicket) {
+        queryClient.setQueryData(ticketKeys.detail(id), context.previousTicket);
+      }
+    },
+
+    onSettled: (_data, _error, { id }) => {
       queryClient.invalidateQueries({ queryKey: ticketKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: ticketKeys.lists() });
     },
@@ -88,10 +153,6 @@ export function useAddComment() {
 //  Real-time: SSE stream hook
 // ─────────────────────────────────────────────
 
-/**
- * Subscribes to the SSE stream and invalidates relevant queries
- * when ticket events arrive.
- */
 export function useTicketStream(enabled = true) {
   const queryClient = useQueryClient();
 
@@ -121,7 +182,6 @@ export function useTicketStream(enabled = true) {
 
       eventSource.onerror = () => {
         eventSource.close();
-        // Reconnect after 5 seconds
         reconnectTimeout = setTimeout(connect, 5000);
       };
     }

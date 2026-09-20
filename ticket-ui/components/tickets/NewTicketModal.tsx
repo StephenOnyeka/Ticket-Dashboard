@@ -8,19 +8,15 @@ import { useCreateTicket } from '@/lib/hooks/useTickets';
 import { useToast } from '@/components/ui/Toast';
 import type { TicketChannel } from '@/lib/types';
 
-// ─────────────────────────────────────────────
-//  New Ticket Modal
-// ─────────────────────────────────────────────
-
 interface NewTicketModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 const CHANNEL_OPTIONS = [
-  { value: 'web', label: '🌐 Web' },
-  { value: 'email', label: '✉️ Email' },
-  { value: 'messaging', label: '💬 Messaging' },
+  { value: 'web', label: 'Web' },
+  { value: 'email', label: 'Email' },
+  { value: 'messaging', label: 'Messaging' },
 ];
 
 interface FormData {
@@ -101,7 +97,7 @@ export function NewTicketModal({ isOpen, onClose }: NewTicketModalProps) {
       title="Create New Ticket"
       size="md"
       footer={
-        <div className="modal-footer-actions">
+        <div className="flex items-center justify-end gap-3">
           <Button variant="ghost" onClick={handleClose} type="button">
             Cancel
           </Button>
@@ -116,7 +112,7 @@ export function NewTicketModal({ isOpen, onClose }: NewTicketModalProps) {
         </div>
       }
     >
-      <form onSubmit={handleSubmit} className="new-ticket-form" noValidate>
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <Input
           id="new-ticket-title"
           label="Title *"
@@ -138,7 +134,7 @@ export function NewTicketModal({ isOpen, onClose }: NewTicketModalProps) {
           required
         />
 
-        <div className="form-row">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input
             id="new-ticket-email"
             label="Customer Email *"

@@ -9,10 +9,7 @@ import { TicketTable } from '@/components/tickets/TicketTable';
 import { TicketStatsCardsDetailed } from '@/components/tickets/TicketStatsCards';
 import { NewTicketModal } from '@/components/tickets/NewTicketModal';
 import { useTickets, useTicketStream } from '@/lib/hooks/useTickets';
-
-// ─────────────────────────────────────────────
-//  Dashboard — Main Page
-// ─────────────────────────────────────────────
+import { Add } from 'iconsax-react';
 
 export default function DashboardPage() {
   const searchParams = useSearchParams();
@@ -61,7 +58,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="page-content">
+    <div className="flex flex-col flex-1 min-h-0">
       <Header
         title="Ticket Dashboard"
         subtitle="Monitor and resolve customer support tickets"
@@ -71,14 +68,14 @@ export default function DashboardPage() {
             id="new-ticket-btn"
             variant="primary"
             onClick={() => setIsNewTicketOpen(true)}
-            leftIcon={<span aria-hidden="true">+</span>}
+            leftIcon={<Add size={18} variant="Linear" color="currentColor" />}
           >
             New Ticket
           </Button>
         }
       />
 
-      <div className="page-body">
+      <div className="p-6 max-w-7xl mx-auto w-full flex-1 space-y-6">
         {/* Stats */}
         <TicketStatsCardsDetailed
           totalAll={allData?.total ?? 0}

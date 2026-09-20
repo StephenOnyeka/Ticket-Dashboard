@@ -4,23 +4,19 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-
-// ─────────────────────────────────────────────
-//  Sidebar Navigation
-// ─────────────────────────────────────────────
-
-const navLinks = [
-  { href: '/dashboard', label: 'Overview', icon: '◈' },
-  { href: '/dashboard?status=open', label: 'Open Tickets', icon: '●', status: 'open' },
-  { href: '/dashboard?status=pending', label: 'Pending', icon: '◐', status: 'pending' },
-  { href: '/dashboard?status=closed', label: 'Closed', icon: '○', status: 'closed' },
-];
-
-const channelLinks = [
-  { href: '/dashboard?channel=web', label: 'Web', icon: '🌐' },
-  { href: '/dashboard?channel=email', label: 'Email', icon: '✉️' },
-  { href: '/dashboard?channel=messaging', label: 'Messaging', icon: '💬' },
-];
+import {
+  Ticket,
+  Category,
+  TickCircle,
+  Clock,
+  CloseCircle,
+  Global,
+  Sms,
+  Messages3,
+  LogoutCurve,
+  ShieldSecurity,
+  User,
+} from 'iconsax-react';
 
 export function Sidebar() {
   const { user, logout } = useAuth();
@@ -34,69 +30,117 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="sidebar" role="navigation" aria-label="Main navigation">
+    <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 transition-colors duration-200" role="navigation" aria-label="Main navigation">
       {/* Logo */}
-      <div className="sidebar-logo">
-        <div className="sidebar-logo-icon" aria-hidden="true">🎫</div>
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-800/80">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
+          <Ticket size={22} variant="Bold" color="currentColor" />
+        </div>
         <div>
-          <div className="sidebar-logo-title">SupportDesk</div>
-          <div className="sidebar-logo-subtitle">Ticket Dashboard</div>
+          <div className="text-base font-bold text-white tracking-tight leading-tight">SupportDesk</div>
+          <div className="text-xs text-slate-400 font-medium">Ticket Dashboard</div>
         </div>
       </div>
 
-      {/* Main nav */}
-      <nav className="sidebar-nav">
-        <div className="sidebar-section-label">MAIN</div>
-        {navLinks.map((link) => {
-          const isActive = pathname === link.href || (link.href === '/dashboard' && pathname === '/dashboard' && !link.status);
-          return (
+      {/* Main Navigation */}
+      <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
+        <div>
+          <div className="px-3 mb-2 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Main</div>
+          <div className="space-y-1">
             <Link
-              key={link.href}
-              href={link.href}
-              className={`sidebar-link ${isActive ? 'sidebar-link-active' : ''}`}
-              aria-current={isActive ? 'page' : undefined}
+              href="/dashboard"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                pathname === '/dashboard'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'hover:bg-slate-800/60 hover:text-white text-slate-300'
+              }`}
             >
-              <span className="sidebar-link-icon" aria-hidden="true">{link.icon}</span>
-              {link.label}
+              <Category size={18} variant="Linear" color="currentColor" />
+              <span>Overview</span>
             </Link>
-          );
-        })}
-
-        <div className="sidebar-divider" />
-
-        <div className="sidebar-section-label">CHANNELS</div>
-        {channelLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="sidebar-link"
-          >
-            <span className="sidebar-link-icon" aria-hidden="true">{link.icon}</span>
-            {link.label}
-          </Link>
-        ))}
-      </nav>
-
-      {/* User info */}
-      <div className="sidebar-user">
-        <div className="sidebar-avatar" aria-hidden="true">
-          {user?.avatarInitials || '??'}
-        </div>
-        <div className="sidebar-user-info">
-          <div className="sidebar-user-name">{user?.name || 'Unknown'}</div>
-          <div className="sidebar-user-role">
-            {user?.role === 'agent' ? '🛡 Agent' : '👤 Guest'}
+            <Link
+              href="/dashboard?status=open"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+            >
+              <Clock size={18} variant="Linear" color="currentColor" className="text-emerald-400" />
+              <span>Open Tickets</span>
+            </Link>
+            <Link
+              href="/dashboard?status=pending"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+            >
+              <TickCircle size={18} variant="Linear" color="currentColor" className="text-amber-400" />
+              <span>Pending</span>
+            </Link>
+            <Link
+              href="/dashboard?status=closed"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+            >
+              <CloseCircle size={18} variant="Linear" color="currentColor" className="text-slate-400" />
+              <span>Closed</span>
+            </Link>
           </div>
         </div>
-        <button
-          className="sidebar-logout"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          aria-label="Logout"
-          title="Logout"
-        >
-          {isLoggingOut ? '...' : '⇥'}
-        </button>
+
+        <div>
+          <div className="px-3 mb-2 text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Channels</div>
+          <div className="space-y-1">
+            <Link
+              href="/dashboard?channel=web"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+            >
+              <Global size={18} variant="Linear" color="currentColor" className="text-blue-400" />
+              <span>Web</span>
+            </Link>
+            <Link
+              href="/dashboard?channel=email"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+            >
+              <Sms size={18} variant="Linear" color="currentColor" className="text-purple-400" />
+              <span>Email</span>
+            </Link>
+            <Link
+              href="/dashboard?channel=messaging"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-slate-800/60 hover:text-white text-slate-300 transition-all"
+            >
+              <Messages3 size={18} variant="Linear" color="currentColor" className="text-teal-400" />
+              <span>Messaging</span>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* User Footer */}
+      <div className="p-4 border-t border-slate-800/80 bg-slate-950/40">
+        <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-800/40 border border-slate-800">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600/30 border border-indigo-500/30 text-indigo-400 flex items-center justify-center text-xs font-bold">
+            {user?.avatarInitials || '??'}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-semibold text-white truncate">{user?.name || 'User'}</div>
+            <div className="flex items-center gap-1 text-[11px] text-slate-400">
+              {user?.role === 'agent' ? (
+                <>
+                  <ShieldSecurity size={12} variant="Linear" color="currentColor" className="text-indigo-400" />
+                  <span>Agent</span>
+                </>
+              ) : (
+                <>
+                  <User size={12} variant="Linear" color="currentColor" className="text-slate-400" />
+                  <span>Guest</span>
+                </>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+            title="Logout"
+          >
+            <LogoutCurve size={18} variant="Linear" color="currentColor" />
+          </button>
+        </div>
       </div>
     </aside>
   );
