@@ -4,6 +4,7 @@
 
 export type TicketStatus = 'open' | 'pending' | 'closed';
 export type TicketChannel = 'web' | 'email' | 'messaging';
+export type TicketPriority = 'urgent' | 'high' | 'medium' | 'low';
 export type UserRole = 'agent' | 'guest';
 
 export interface User {
